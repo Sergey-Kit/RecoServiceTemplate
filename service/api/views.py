@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from service.api.exceptions import ModelNotFound, UserNotFound
 from service.log import app_logger
-from service.models import Error
 from service.models import popular, user_knn
 
 
