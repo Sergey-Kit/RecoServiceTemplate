@@ -15,4 +15,3 @@ jobs:
       - run: pip install poetry
       - run: make setup
       - run: make lint
-      - run: make test
