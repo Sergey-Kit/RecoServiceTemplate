@@ -44,7 +44,7 @@ class userKNN:
         else:
             reco = self.popular_model.predict()
         return reco
-    
+
 
 app_config = get_config()
 
