@@ -53,7 +53,7 @@ mypy: .venv
 pylint: .venv
 	pylint $(PROJECT) $(TESTS)
 
-lint: isort flake mypy pylint
+lint: mypy pylint
 
 
 # Test
