@@ -1,5 +1,6 @@
 import typing as tp
 import dill
+
 from pydantic import BaseModel
 
 from service.settings import get_config
@@ -46,7 +47,29 @@ class userKNN:
         return reco
 
 
+class userKNNOffline:
+    """Class for offline kNN model"""
+
+    def __init__(self, N_recs: int = 10):
+        self.N_recs = N_recs
+
+        with open("./service/models_folder/userknn_offline.dill", "rb") as f:
+            self.user_knn_pred_result = dill.load(f)
+
+        self.popular_model = Popular(self.N_recs)
+
+    def predict(self, user_id: int) -> list:
+        if user_id in self.user_knn_pred_result:
+            reco = self.user_knn_pred_result[user_id][:self.N_recs]
+            if len(reco) < self.N_recs:
+                reco_popular = self.popular_model.predict()
+                reco += [item for item in reco_popular if item not in reco][: self.N_recs - len(reco)]
+        else:
+            reco = self.popular_model.predict()
+        return reco    
+
+
 app_config = get_config()
 
 popular = Popular(N_recs=app_config.k_recs)
-user_knn = userKNN(N_recs=app_config.k_recs)
+user_knn = userKNNOffline(N_recs=app_config.k_recs)
