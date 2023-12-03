@@ -66,7 +66,7 @@ class userKNNOffline:
                 reco += [item for item in reco_popular if item not in reco][: self.N_recs - len(reco)]
         else:
             reco = self.popular_model.predict()
-        return reco    
+        return reco
 
 
 app_config = get_config()
