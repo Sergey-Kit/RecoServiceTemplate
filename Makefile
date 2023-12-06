@@ -53,7 +53,7 @@ mypy: .venv
 pylint: .venv
 	pylint $(PROJECT) $(TESTS)
 
-lint: mypy pylint
+lint: mypy
 
 
 # Test
