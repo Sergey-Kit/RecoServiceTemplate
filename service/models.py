@@ -69,7 +69,27 @@ class userKNNOffline:
         return reco
 
 
+class ALSOffline:
+    """Class for offline ALS model"""
+
+    def __init__(self, N_recs: int = 10):
+        self.N_recs = N_recs
+
+        with open("./service/models_folder/als_predict_offline.dill", "rb") as f:
+            self.als_pred_result = dill.load(f)
+
+        self.popular_model = Popular(self.N_recs)
+
+    def predict(self, user_id: int) -> list:
+        if user_id in self.als_pred_result:
+            reco = self.als_pred_result[user_id][:self.N_recs]
+        else:
+            reco = self.popular_model.predict()
+        return reco
+
+
 app_config = get_config()
 
 popular = Popular(N_recs=app_config.k_recs)
 user_knn = userKNNOffline(N_recs=app_config.k_recs)
+als = ALSOffline(N_recs=app_config.k_recs)

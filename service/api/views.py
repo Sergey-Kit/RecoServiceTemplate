@@ -8,10 +8,10 @@ from pydantic import BaseModel
 
 from service.api.exceptions import ModelNotFound, UserNotFound
 from service.log import app_logger
-from service.models import popular, user_knn
+from service.models import popular, user_knn, als
 
 
-models = ("test_model", "top", "random", "popular", "user_knn")
+models = ("test_model", "top", "random", "popular", "user_knn", "als")
 
 
 class RecoResponse(BaseModel):
@@ -75,6 +75,8 @@ async def get_reco(
         reco = popular.predict()
     elif model_name == "user_knn":
         reco = user_knn.predict(user_id)
+    elif model_name == "als":
+        reco = als.predict(user_id)
     else:
         raise ModelNotFound(error_message=f"Model {model_name} not found")
 
