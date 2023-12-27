@@ -8,10 +8,9 @@ from pydantic import BaseModel
 
 from service.api.exceptions import ModelNotFound, UserNotFound
 from service.log import app_logger
-from service.models import popular, user_knn, als, dssm, autoencoder, recbole
+from service.models import popular, user_knn, als, dssm, autoencoder, two_step_model
 
-models = ("test_model", "top", "random", "popular", "user_knn", "als", "dssm", "autoencoder", "recbole", "recbole_onl")
-from service.api import recbole_onl
+models = ("test_model", "top", "random", "popular", "user_knn", "als", "dssm", "autoencoder", "two_step_model")
 
 class RecoResponse(BaseModel):
     user_id: int
@@ -80,10 +79,8 @@ async def get_reco(
         reco = dssm.predict(user_id)
     elif model_name == "autoencoder":
         reco = autoencoder.predict(user_id)
-    elif model_name == "recbole":
-        reco = recbole.predict(user_id)
-    elif model_name == "recbole_onl":
-        reco = recbole_onl.recommend_items_to_user(user_id,N_recs=k_recs)
+    elif model_name == "two_step_model":
+        reco = two_step_model.predict(user_id)
     else:
         raise ModelNotFound(error_message=f"Model {model_name} not found")
 

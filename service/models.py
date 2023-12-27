@@ -126,20 +126,19 @@ class AutoencoderOffline:
         return reco
 
 
-class RecboleOffline:
-    """Class for offline Recbole model"""
+class TwoStepModel:
+    """Class for offline TwoStepModel model"""
 
     def __init__(self, N_recs: int = 10):
         self.N_recs = N_recs
 
-        with open("./service/models_folder/recbole_offline.pkl", "rb") as f:
-            self.recbole_pred_result = pickle.load(f)
-
+        with open("./service/models_folder/two_step_model_offline.pkl", "rb") as f:
+            self.two_step_model_pred_result = pickle.load(f)
         self.popular_model = Popular(self.N_recs)
 
     def predict(self, user_id: int) -> list:
-        if user_id in self.recbole_pred_result:
-            reco = self.recbole_pred_result[user_id][:self.N_recs]
+        if user_id in self.two_step_model_pred_result:
+            reco = self.two_step_model_pred_result[user_id][:self.N_recs]
         else:
             reco = self.popular_model.predict()
         return reco
@@ -152,5 +151,5 @@ user_knn = userKNNOffline(N_recs=app_config.k_recs)
 als = ALSOffline(N_recs=app_config.k_recs)
 dssm = DSSMOffline(N_recs=app_config.k_recs)
 autoencoder = AutoencoderOffline(N_recs=app_config.k_recs)
-recbole = RecboleOffline(N_recs=app_config.k_recs)
-recbole_onl = RecboleOnline(N_recs=app_config.k_recs)
+two_step_model = TwoStepModel(N_recs=app_config.k_recs)
+
