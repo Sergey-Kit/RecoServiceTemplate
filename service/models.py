@@ -1,5 +1,6 @@
 import typing as tp
 import dill
+import pickle
 
 from pydantic import BaseModel
 
@@ -87,9 +88,69 @@ class ALSOffline:
             reco = self.popular_model.predict()
         return reco
 
+class DSSMOffline:
+    """Class for offline DSSM model"""
+
+    def __init__(self, N_recs: int = 10):
+        self.N_recs = N_recs
+
+        with open("./service/models_folder/dssm_predict_offline.pkl", "rb") as f:
+            self.dssm_pred_result = pickle.load(f)
+
+        self.popular_model = Popular(self.N_recs)
+
+    def predict(self, user_id: int) -> list:
+        if user_id in self.dssm_pred_result:
+            reco = self.dssm_pred_result[user_id][:self.N_recs]
+        else:
+            reco = self.popular_model.predict()
+        return reco
+
+
+class AutoencoderOffline:
+    """Class for offline Autoencoder model"""
+
+    def __init__(self, N_recs: int = 10):
+        self.N_recs = N_recs
+
+        with open("./service/models_folder/autoencoder_offline.pkl", "rb") as f:
+            self.autoencoder_pred_result = pickle.load(f)
+
+        self.popular_model = Popular(self.N_recs)
+
+    def predict(self, user_id: int) -> list:
+        if user_id in self.autoencoder_pred_result:
+            reco = self.autoencoder_pred_result[user_id][:self.N_recs]
+        else:
+            reco = self.popular_model.predict()
+        return reco
+
+
+class RecboleOffline:
+    """Class for offline Recbole model"""
+
+    def __init__(self, N_recs: int = 10):
+        self.N_recs = N_recs
+
+        with open("./service/models_folder/recbole_offline.pkl", "rb") as f:
+            self.recbole_pred_result = pickle.load(f)
+
+        self.popular_model = Popular(self.N_recs)
+
+    def predict(self, user_id: int) -> list:
+        if user_id in self.recbole_pred_result:
+            reco = self.recbole_pred_result[user_id][:self.N_recs]
+        else:
+            reco = self.popular_model.predict()
+        return reco
+
 
 app_config = get_config()
 
 popular = Popular(N_recs=app_config.k_recs)
 user_knn = userKNNOffline(N_recs=app_config.k_recs)
 als = ALSOffline(N_recs=app_config.k_recs)
+dssm = DSSMOffline(N_recs=app_config.k_recs)
+autoencoder = AutoencoderOffline(N_recs=app_config.k_recs)
+recbole = RecboleOffline(N_recs=app_config.k_recs)
+recbole_onl = RecboleOnline(N_recs=app_config.k_recs)

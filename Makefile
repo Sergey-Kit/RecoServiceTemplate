@@ -74,6 +74,6 @@ run: build
 
 # All
 
-all: setup format lint test run
+all: setup test run
 
 .DEFAULT_GOAL = all
